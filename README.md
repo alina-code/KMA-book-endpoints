@@ -12,5 +12,6 @@ You can add books through POST http://localhost:8081
 }
 
 And find all books: GET http://localhost:8081
+Find one book: GET http://localhost:8081/{id}
 
  
