@@ -1,0 +1,35 @@
+services:
+  app:
+    ports:
+      - 8081:8081
+    image: 'product-microservice:latest'
+    build:
+      context: .
+    container_name: product-microservice
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/book
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1234
+
+  db:
+    platform: linux/x86_64
+    image: mysql:5.7
+    restart: always
+    container_name: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=book
+    ports:
+      - "3307:3306"
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  redis:
+    image: "redis:alpine"
+

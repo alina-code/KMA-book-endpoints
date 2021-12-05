@@ -1,0 +1,30 @@
+spring:
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  datasource:
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;INIT=create schema IF NOT EXISTS product_schema
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+
+  flyway:
+    enabled: false
+
+custom:
+  cart-service:
+    name: localhost
+  jwt:
+    secret: secretcode91837^&@!
+
+
+
+
+
+
