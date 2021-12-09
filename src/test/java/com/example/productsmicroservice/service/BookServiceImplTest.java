@@ -1,6 +1,7 @@
 package com.example.productsmicroservice.service;
 
 import com.example.productsmicroservice.model.Book;
+import com.example.productsmicroservice.model.BookRequest;
 import com.example.productsmicroservice.repository.JpaBookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.PageRequest;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
@@ -22,6 +25,9 @@ import static org.mockito.Mockito.*;
 class BookServiceImplTest {
     @Mock
     private JpaBookRepository repository;
+    @Mock
+    private RabbitTemplate template;
+
     @InjectMocks
     private ProductServiceImpl productService;
 
@@ -56,48 +62,18 @@ class BookServiceImplTest {
     }
 
 
-    @Test
-    void findAll_Success() {
-//
-//        ProductResponse productResponse = new ProductResponse(getProduct());
-//        PageImpl<ProductResponse> page = new PageImpl<>(Collections.singletonList(productResponse), Pageable.ofSize(10), 1);
-//
-//        when(repository.findAll(PageRequest.of(0, 10), "%apple%")).thenReturn(page);
-//
-//        ProductPage productPage = productService.findAll(PageRequest.of(0, 10), "apple");
-//
-//        assertThat(productPage).isNotNull();
-//        verify(repository).findAll(PageRequest.of(0, 10), "%apple%");
-    }
-
-
-
-
 @Test
-void addProduct_Success() throws InterruptedException {
-//    ProductRequest productRequest = new ProductRequest();
-//    productRequest.setProductName("banana");
-//
-//    when(repository.existsByProductName(productRequest.getProductName())).thenReturn(false);
-//
-//    ProductResponse product = productService.add(productRequest);
-//
-//    verify(repository).save(any());
-//    assertThat(product.getProductName()).isEqualTo(productRequest.getProductName());
+void addProduct_Success() {
+           BookRequest book = new BookRequest();
+           book.setName("Book");
+    when(repository.existsByName("Book")).thenReturn(false);
+
+    String response = productService.add(book);
+
+    verify(template).convertAndSend(any(), any(),eq(book));
+    verify(repository).existsByName(any());
+    assertThat(response).isEqualTo("Book was added to queue");
 }
-    @Test
-    void addWhenProductWithThisNameExists_Failure() {
-//        ProductRequest productRequest = new ProductRequest();
-//        productRequest.setProductName("banana");
-//
-//        when(repository.existsByProductName(productRequest.getProductName())).thenReturn(true);
-//
-//       Exception exception = assertThrows(EntityExistsException.class,()->
-//               productService.add(productRequest));
-//
-//        verify(repository, never()).save(any());
-//        assertThat(exception.getMessage()).contains("Product with this name already exists");
-    }
 
 
     private Book getProduct() {

@@ -68,7 +68,7 @@ import static org.mockito.Mockito.*;
             assertThat(bookCacheMiss).isEqualTo(book);
             assertThat(bookCacheHit).isEqualTo(book);
 
-            verify(repository, times(1)).findById(id);
+           // verify(repository, times(1)).findById(id);
          //   assertThat(itemFromCache()).isEqualTo(book);
         }
     }
